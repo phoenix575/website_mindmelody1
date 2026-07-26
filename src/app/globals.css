@@ -1,0 +1,261 @@
+@import "tailwindcss";
+
+/*
+ * Theme is driven by a `data-theme` attribute on <html>, written by the
+ * inline script in layout.tsx before first paint. `dark:` therefore has to
+ * key off that attribute rather than the media query.
+ */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root,
+[data-theme="light"] {
+  --bg: #f7f8fc;
+  --bg-deep: #eceffa;
+  --surface: #ffffff;
+  --surface-2: #f2f4fd;
+  --border: #dfe3f3;
+  --border-strong: #c6cce7;
+
+  /* Every foreground/background pair below clears WCAG AA (4.5:1) for small
+     text against the surfaces it is actually used on. */
+  --fg: #0d1023;
+  --fg-muted: #4d5573;
+  --fg-subtle: #5f6782;
+
+  --brand: #5b3ce0;
+  --brand-fg: #ffffff;
+  --brand-soft: #ece7ff;
+  --accent: #076e66;
+  --accent-soft: #d8f4f0;
+  --warm: #a8441a;
+  --warm-soft: #fdeade;
+
+  --ring: #5b3ce0;
+  --shadow: 0 1px 2px rgb(13 16 35 / 0.05), 0 12px 32px -18px rgb(13 16 35 / 0.28);
+}
+
+[data-theme="dark"] {
+  --bg: #06080f;
+  --bg-deep: #03050a;
+  --surface: #0e1220;
+  --surface-2: #151b2d;
+  --border: #222941;
+  --border-strong: #333c5c;
+
+  --fg: #e9ecf8;
+  --fg-muted: #a2abc6;
+  --fg-subtle: #7d86a3;
+
+  --brand: #9b87ff;
+  --brand-fg: #0b0716;
+  --brand-soft: #1b1735;
+  --accent: #4ddbc9;
+  --accent-soft: #0f2b29;
+  --warm: #ff9a63;
+  --warm-soft: #2e1c12;
+
+  --ring: #9b87ff;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 18px 40px -20px rgb(0 0 0 / 0.8);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-deep: var(--bg-deep);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-fg: var(--fg);
+  --color-muted: var(--fg-muted);
+  --color-subtle: var(--fg-subtle);
+
+  --color-brand: var(--brand);
+  --color-brand-fg: var(--brand-fg);
+  --color-brand-soft: var(--brand-soft);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-warm: var(--warm);
+  --color-warm-soft: var(--warm-soft);
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    color-scheme: light;
+  }
+
+  [data-theme="dark"] {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Only remove the ring for pointer users who did not focus via keyboard. */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--brand);
+    color: var(--brand-fg);
+  }
+}
+
+@layer utilities {
+  .container-page {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .container-page {
+      padding-inline: 2rem;
+    }
+  }
+
+  .text-gradient {
+    background: linear-gradient(
+      100deg,
+      var(--fg) 0%,
+      var(--brand) 55%,
+      var(--accent) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Soft aurora wash used behind the hero and section headers. */
+  .aurora {
+    background-image:
+      radial-gradient(
+        42rem 26rem at 12% -10%,
+        color-mix(in oklab, var(--brand) 26%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        34rem 22rem at 88% 4%,
+        color-mix(in oklab, var(--accent) 22%, transparent),
+        transparent 70%
+      );
+  }
+
+  .grid-lines {
+    background-image:
+      linear-gradient(
+        to right,
+        color-mix(in oklab, var(--border) 70%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in oklab, var(--border) 70%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 3rem 3rem;
+    mask-image: radial-gradient(60% 60% at 50% 30%, #000 0%, transparent 100%);
+  }
+}
+
+/* Animations — every one of them is opt-out under reduced motion. */
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -0.65rem, 0);
+  }
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 0.75rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-drift {
+  animation: drift 7s ease-in-out infinite;
+}
+.animate-dash {
+  animation: dash 14s linear infinite;
+}
+.animate-pulse-soft {
+  animation: pulse-soft 4s ease-in-out infinite;
+}
+.animate-rise {
+  animation: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
